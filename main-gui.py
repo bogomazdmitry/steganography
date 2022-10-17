@@ -11,7 +11,7 @@ from methods import decrypt, encrypt
 class Ui(QtWidgets.QMainWindow):
     firstImage = None
     secondImage = None
-    KEY = 1586
+    KEY_FOR_RANDOM = 1586
 
     def __init__(self):
         super(Ui, self).__init__()
@@ -31,6 +31,8 @@ class Ui(QtWidgets.QMainWindow):
             QPixmap(path[0])
             self.graphicsViewFirst.setPixmap(self.convertOpenCvImageToQPixmap(self.firstImage))
             self.secondImage = None
+            self.labelFirst.setText(path[0])
+            self.labelSecond.setText('')
             self.plainTextEditInformation.setPlainText('')
             self.graphicsViewSecond.clear()
 
@@ -42,6 +44,7 @@ class Ui(QtWidgets.QMainWindow):
         path = QFileDialog.getSaveFileName(self, 'Сохранить файл', '.', 'Image files (*.png)')
         if path[0] != '':
             cv2.imwrite(path[0], self.secondImage)
+            self.labelSecond.setText(path[0])
 
     def pushButtonEncryptClick(self):
         if self.firstImage is None:
@@ -54,7 +57,7 @@ class Ui(QtWidgets.QMainWindow):
             return
 
         newImage = encrypt(self.firstImage,
-            self.KEY,
+            self.KEY_FOR_RANDOM,
             self.spinBoxCountRepeat.value(),
             self.doubleSpinBoxBrightness.value(),
             information)
@@ -70,7 +73,7 @@ class Ui(QtWidgets.QMainWindow):
             return
 
         information = decrypt(self.firstImage,
-            self.KEY,
+            self.KEY_FOR_RANDOM,
             self.spinBoxCountRepeat.value(),
             self.doubleSpinBoxBrightness.value(),
             self.spinBoxSizeBlock.value())
