@@ -2,7 +2,8 @@ import cv2
 
 from methods import decrypt, encrypt
 
-message = open("text.txt", "r").read()
+with open("text.txt", "r") as file :
+    message = file.read()
 image_name = 'zebra.png'
 
 source_image = cv2.imread(image_name)

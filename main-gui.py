@@ -25,19 +25,21 @@ class Ui(QtWidgets.QMainWindow):
         self.show()
 
     def pushButtonImportClick(self):
-        path = QFileDialog.getOpenFileName(self, 'Открыть изображение', '.', 'Image files (*.jpg *.gif *.png)')
+        path = QFileDialog.getOpenFileName(self, 'Открыть изображение', '.', 'Image files (*.png)')
         if path[0] != '':
             self.firstImage = cv2.imread(path[0])
             QPixmap(path[0])
             self.graphicsViewFirst.setPixmap(self.convertOpenCvImageToQPixmap(self.firstImage))
             self.secondImage = None
+            self.plainTextEditInformation.setPlainText('')
+            self.graphicsViewSecond.clear()
 
     def pushButtonSaveClick(self):
         if self.secondImage is None:
             self.errorBox('Изображения для сохранения нет!')
             return
 
-        path = QFileDialog.getSaveFileName(self, 'Сохранить файл')
+        path = QFileDialog.getSaveFileName(self, 'Сохранить файл', '.', 'Image files (*.png)')
         if path[0] != '':
             cv2.imwrite(path[0], self.secondImage)
 
@@ -66,10 +68,6 @@ class Ui(QtWidgets.QMainWindow):
         if self.firstImage is None:
             self.errorBox('Загрузите изображение!')
             return
-
-        print(self.spinBoxCountRepeat.value())
-        print(self.doubleSpinBoxBrightness.value())
-        print(self.spinBoxSizeBlock.value())
 
         information = decrypt(self.firstImage,
             self.KEY,

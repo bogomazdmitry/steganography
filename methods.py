@@ -1,5 +1,4 @@
 import random
-import pandas as pd
 import numpy as np
 import bitarray
 
@@ -29,7 +28,6 @@ def encrypt(image, key, countRepeat, brightness, information):
             lambdaxy = getBrightness(pixel)
 
             Bxy_new = pixel[BLUE_CHANNEL] + (2 * bitInformation - 1) * brightness * lambdaxy
-            output[i, j] = pixel
             if Bxy_new < 0:
                 Bxy_new = 0
             elif Bxy_new > 255:
@@ -39,7 +37,6 @@ def encrypt(image, key, countRepeat, brightness, information):
 
 
 def decrypt(image, key, countRepeat, brightness, blockSize):
-    output = image.copy()
     random.seed(key)
     height, width, channels = image.shape
     bits = ''
@@ -61,7 +58,7 @@ def decrypt(image, key, countRepeat, brightness, blockSize):
         return (BxyAll - 2 * image[targetHeightIndex, targetWidthIndex, BLUE_CHANNEL]) / (count - 2)
 
     count = 0
-    while checkItIsEnd(bits) == False and count < 32768:
+    while not checkItIsEnd(bits) and count < 2**15:
         q = 0
         for repeatIndex in range(countRepeat):
             i = int(random.random() * height) # i = random.randint(0, width - 1)
@@ -74,9 +71,10 @@ def decrypt(image, key, countRepeat, brightness, blockSize):
             bits += '0'
 
         count += 1
-
-
-    return  bitarray.bitarray(bits).tobytes().decode('utf-8')
+    try:
+        return bitarray.bitarray(bits).tobytes().decode('utf-8')
+    except UnicodeDecodeError:
+        return bits
 
 
 def checkItIsEnd(bits):
