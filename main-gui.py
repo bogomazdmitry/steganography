@@ -25,7 +25,7 @@ class Ui(QtWidgets.QMainWindow):
         self.show()
 
     def pushButtonImportClick(self):
-        path = QFileDialog.getOpenFileName(self, 'Открыть изображение', '.', 'Image files (*.png)')
+        path = QFileDialog.getOpenFileName(self, 'Открыть изображение', '.', 'Image files (*.png | *.jpg | *.bmp)')
         if path[0] != '':
             self.firstImage = cv2.imread(path[0])
             QPixmap(path[0])
@@ -41,7 +41,7 @@ class Ui(QtWidgets.QMainWindow):
             self.errorBox('Изображения для сохранения нет!')
             return
 
-        path = QFileDialog.getSaveFileName(self, 'Сохранить файл', '.', 'Image files (*.png)')
+        path = QFileDialog.getSaveFileName(self, 'Сохранить файл', '.', 'Image files (*.png | *.jpg | *.bmp)')
         if path[0] != '':
             cv2.imwrite(path[0], self.secondImage)
             self.labelSecond.setText(path[0])
