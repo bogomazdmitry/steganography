@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
 import sys
+import bitarray
 import cv2
 
 from methods import decrypt, encrypt
@@ -65,7 +66,15 @@ class Ui(QtWidgets.QMainWindow):
         self.secondImage = newImage
         self.graphicsViewSecond.setPixmap(self.convertOpenCvImageToQPixmap(self.secondImage))
 
-        self.successBox('Информация успешно вставлена')
+        bitsInformation = bitarray.bitarray()
+        bitsInformation.frombytes((information + ' ').encode('utf-8'))
+
+        countBitsEncrypted = len(bitsInformation)
+        height, width, channels = self.firstImage.shape
+        boxSize = self.spinBoxSizeBlock.value() * 2 + 1
+        maxBitsEncrypted = height * width / self.spinBoxCountRepeat.value() / boxSize / boxSize
+
+        self.successBox('Информация успешно вставлена ' + str(countBitsEncrypted) + '/' + str(maxBitsEncrypted))
 
     def pushButtonDecryptClick(self):
         if self.firstImage is None:
